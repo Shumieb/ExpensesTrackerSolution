@@ -1,0 +1,85 @@
+﻿@ExpensesTracker.Backend_HostAddress = https://localhost:7170
+
+
+
+GET {{ExpensesTracker.Backend_HostAddress}}/categories
+
+###
+
+GET {{ExpensesTracker.Backend_HostAddress}}/categories/1
+
+###
+
+GET {{ExpensesTracker.Backend_HostAddress}}/expenses
+
+###
+
+POST {{ExpensesTracker.Backend_HostAddress}}/expenses
+Content-Type: application/json
+{
+    "name": "aldi shopping",
+    "amount": 20.05,
+    "categoryid": 3,
+    "frequencyid": 1,
+    "duedate": 5
+} 
+
+###
+
+DELETE {{ExpensesTracker.Backend_HostAddress}}/expenses/2
+
+###
+
+GET {{ExpensesTracker.Backend_HostAddress}}/expenses/1
+
+###
+
+PUT {{ExpensesTracker.Backend_HostAddress}}/expenses/3
+Content-Type: application/json
+{
+    "name": "boots shopping",
+    "amount": 25.55,
+    "categoryid": 3,
+    "frequencyid": 2,
+    "duedate": 1
+} 
+
+###
+
+GET {{ExpensesTracker.Backend_HostAddress}}/frequencies
+
+###
+
+GET {{ExpensesTracker.Backend_HostAddress}}/frequencies/1
+
+###
+
+GET {{ExpensesTracker.Backend_HostAddress}}/income
+
+###
+
+POST {{ExpensesTracker.Backend_HostAddress}}/income
+Content-Type: application/json
+{
+    "name": "salary also",
+    "amount": 200.05
+} 
+
+###
+
+DELETE {{ExpensesTracker.Backend_HostAddress}}/income/3
+
+###
+
+GET {{ExpensesTracker.Backend_HostAddress}}/income/1
+
+###
+
+PUT {{ExpensesTracker.Backend_HostAddress}}/income/2
+Content-Type: application/json
+{
+    "name": "salary extra",
+    "amount": 20.05
+} 
+
+###

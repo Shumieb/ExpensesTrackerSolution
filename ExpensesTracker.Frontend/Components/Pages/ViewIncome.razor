@@ -1,0 +1,70 @@
+﻿@page "/income/{id:int}"
+
+@inject NavigationManager NavigationManager;
+
+<p class="fs-3 fw-bold text-center txt-custom-dark mb-4 pb-1">Income</p>
+
+<div class="custom-w-60 mx-auto text-center border border-3 rounded border-info pt-4 pb-5 bg-dark-custom">
+    @if(income is null)
+    {
+        <p class="fs-4 text-center text-white fw-bold">loading....</p>
+    }
+    else
+    {
+        <p class="fs-4 text-center fw-bold text-white mb-4">@income.Name</p>
+        <p class="fs-5 text-white"><b>Amount:</b> @income.Amount.ToString("C")</p>
+
+        <div class="mt-5">
+            <a role="button"
+               class="btn bg-custom-btn-dark txt-custom-dark mx-1"
+               href="/addEditIncome/@income.IncomeId">
+                <i class="bi bi-pencil-square"></i>
+                Edit
+            </a>
+            <a role="button"
+               class="btn btn-danger mx-1"
+               href="/delete-income/@income.IncomeId">
+                <i class="bi bi-trash3"></i>
+                Delete
+            </a>
+            <a role="button"
+               class="btn btn-secondary mx-1"
+               href="/">
+                <i class="bi bi-arrow-left-square"></i>
+                Back
+            </a>
+        </div>
+    }
+
+</div>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private Income? income { get; set; } = new Income
+    {
+       IncomeId = 1,
+        Name = "August Salary",
+        Amount = 200.99M,
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+        if (id > 0)
+        {
+            //income = await IncomeClient.GetIncomeAsync(id);
+            income = new Income
+            {
+                IncomeId=id,
+                Name = "Salary",
+                Amount = 200.56M
+            };
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+}

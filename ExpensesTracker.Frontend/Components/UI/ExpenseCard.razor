@@ -1,0 +1,25 @@
+﻿<div class="card bg-dark-custom custom-w-60 mx-auto pb-0 mb-3 border border-danger border-3 shadow-sm rounded">
+    <div class="d-flex justify-content-between align-items-center py-1 px-2">
+        <p class="txt-custom-danger fs-5 px-3 text-capitalize pt-3">@expense.Name</p>
+        <p class="txt-custom-danger fs-5 px-3 pt-3">@expense.Amount.ToString("C")</p>
+        <div>
+            <button role="button" class="btn bg-custom-btn-dark txt-custom-dark">
+                Not Paid
+            </button>
+            <a role="button" class="btn bg-custom-btn-dark txt-custom-dark" href="/expense/@expense.ExpenseId">
+                <i class="bi bi-eye-fill"></i>
+                View
+            </a>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Expense expense { get; set; } = new Expense
+        {
+            ExpenseId = 1,
+            Name = "expense 1",
+            Amount = 200.25M,
+        };
+}

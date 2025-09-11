@@ -1,3 +1,4 @@
+using ExpensesTracker.Frontend.Clients;
 using ExpensesTracker.Frontend.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,21 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+var expensesTrackerAPIURL = builder.Configuration["ExpensesTrackerApiUrl"] ??
+                        throw new Exception("ExpensesTrackerApiUrl is not set.");
+
+builder.Services.AddHttpClient<ExpensesClient>(
+    client => client.BaseAddress = new Uri(expensesTrackerAPIURL));
+
+builder.Services.AddHttpClient<IncomeClient>(
+    client => client.BaseAddress = new Uri(expensesTrackerAPIURL));
+
+builder.Services.AddHttpClient<CategoriesClient>(
+    client => client.BaseAddress = new Uri(expensesTrackerAPIURL));
+
+builder.Services.AddHttpClient<FrequenciesClient>(
+    client => client.BaseAddress = new Uri(expensesTrackerAPIURL));
 
 var app = builder.Build();
 

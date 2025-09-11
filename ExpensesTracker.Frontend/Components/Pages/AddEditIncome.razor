@@ -1,0 +1,110 @@
+﻿@page "/addEditIncome"
+@page "/addEditIncome/{id:int}"
+@rendermode InteractiveServer
+
+@inject NavigationManager NavigationManager;
+@inject IncomeClient IncomeClient;
+
+<PageTitle>@title</PageTitle>
+
+@if (income is null)
+{
+    <p>loading....</p>
+}
+else
+{
+    <div class="custom-w-60 mx-auto mb-5 bg-dark-custom py-5 rounded">
+
+        <!-----Page Title----->
+        <h3 class="text-white text-center text-capitalize mb-3">
+            @title
+        </h3>
+
+        <EditForm 
+            Model="@income" 
+            FormName="addEditIncome" 
+            OnValidSubmit="HandleSubmit"
+            Enhance
+        >
+            <DataAnnotationsValidator />
+
+            <div class="mb-3 custom-w-80 mx-auto">
+                <label for="name" class="form-label txt-custom-dark fs-5 text-white">Name</label>
+                <InputText id="name" @bind-Value="income.Name" class="form-control fs-5 txt-custom-dark" />
+                <ValidationMessage For="() => income.Name" class="txt-custom-danger" />
+            </div>
+
+            <div class="mb-5 custom-w-80 mx-auto">
+                <label for="amount" class="form-label txt-custom-dark fs-5 text-white">Amount</label>
+                <InputNumber id="amount" @bind-Value="income.Amount" class="form-control fs-5 txt-custom-dark" />
+                <ValidationMessage For="() => income.Amount" class="txt-custom-danger" />
+            </div>
+
+            <div class="mb-3 custom-w-80 mx-auto align-items-center d-flex justify-content-center">
+                <button type="submit" class="btn bg-custom-btn-dark mx-2">
+                    <span class="txt-custom-dark"><i class="bi bi-floppy"></i></span>
+                    <span class="txt-custom-dark fw-bold">Save</span>
+                </button>
+                <a role="button" class="btn btn-secondary fw-bold mx-2" href="/">
+                    <i class="bi bi-x-circle"></i>
+                    Cancel
+                </a>
+            </div>
+
+        </EditForm>
+    </div>
+
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Income? income { get; set; }
+
+    private string title = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+        if (id > 0)
+        {
+            //income = await IncomeClient.GetIncomeAsync(id);
+            income = new Income
+            {
+                Name = "Salary",
+                Amount = 200.56M
+            };
+
+            title = $"Editing {income?.Name}";
+        }
+        else
+        {
+            income = new Income
+            {
+                Name = string.Empty,
+                Amount = 0,
+            };
+            title = "Add Income";
+        }
+    }
+
+    private void HandleSubmit()
+    {
+        if (income is null) return;
+
+        if (id <= 0)
+        {
+            // create a new income
+        }
+        else
+        {
+            income.IncomeId = id;
+            // update the income
+        }
+
+        NavigationManager.NavigateTo("/");
+    }
+
+}

@@ -1,0 +1,103 @@
+﻿@page "/expense/{id:int}"
+
+@inject NavigationManager NavigationManager;
+
+<p class="fs-3 fw-bold text-center txt-custom-dark mb-4 pb-1">Expense</p>
+
+<div class="custom-w-60 mx-auto text-center border border-3 rounded border-danger pt-4 pb-5 bg-dark-custom">
+
+    @if(expense is null || category is null || frequency is null)
+    {
+        <p class="fs-4 text-center txt-custom-danger fw-bold">loading....</p>
+    }
+    else
+    {
+        <p class="fs-4 text-center fw-bold txt-custom-danger mb-4">@expense.Name</p>
+        <p class="fs-5 txt-custom-danger"><b>Amount:</b> @expense.Amount.ToString("C")</p>
+    
+        @if(expense.IsPaid){
+                <p class="fs-5 txt-custom-danger" ><b>Payment Status:</b>  Paid</p>
+            }else
+            {
+            <p class="fs-5 txt-custom-danger"><b>Payment Status:</b> Not Paid</p>
+            }
+
+        <p class="fs-5 txt-custom-danger"><b>Category:</b> @category.Name</p>
+        <p class="fs-5 txt-custom-danger"><b>Frequency:</b> @frequency.Name</p>
+
+        <div class="mt-5">
+            <a role="button" 
+                class="btn bg-custom-btn-dark txt-custom-dark mx-1" 
+                href="/addEditExpense/@expense.ExpenseId"
+            >
+                <i class="bi bi-pencil-square"></i>
+                Edit
+            </a>
+            <a role="button" 
+                class="btn btn-danger mx-1"
+               href="/delete-expense/@expense.ExpenseId">
+                <i class="bi bi-trash3"></i>
+                Delete
+            </a>
+            <a role="button" 
+                class="btn btn-secondary mx-1" 
+                href="/"
+            >
+                <i class="bi bi-arrow-left-square"></i>
+                Back
+            </a>
+        </div>
+    }    
+</div>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private Expense? expense { get; set; } = new Expense
+        {
+            ExpenseId = 1,
+            Name = "Phone Bill",
+            Amount = 20.99M,
+            CategoryId = 1,
+            FrequencyId = 1,
+            DueDate = 12
+        };
+
+    private Category? category;
+    private Frequency? frequency;
+
+    private Category[] categories = [
+       new Category { CategoryId= 1, Name="Bills", Description="This category is for bills."},
+        new Category { CategoryId = 2, Name = "Housing Costs", Description = "This category is for housing costs." },
+        new Category { CategoryId = 3, Name = "Shopping", Description = "This category is for shopping costs." }
+   ];
+
+    private Frequency[] frequencies = [
+        new Frequency { FrequencyId=1, Name="Monthly"},
+        new Frequency { FrequencyId=2, Name="Once Only"}
+    ];
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+        if (id > 0)
+        {
+            // expense = await ExpensesClient.GetExpenseAsync(id);
+
+            if (expense is not null)
+            {
+                // get category
+                category = categories.FirstOrDefault(category => category.CategoryId == expense.CategoryId);
+                // get frequency
+                frequency = frequencies.FirstOrDefault(frequency => frequency.FrequencyId == expense.FrequencyId);
+            }          
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+
+}

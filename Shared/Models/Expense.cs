@@ -18,7 +18,7 @@ namespace Shared.Models
         public decimal Amount { get; set; } = 0;
 
         [Required(ErrorMessage = "The Category is required.")]
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
 
         public Category? Category { get; set; }
 
@@ -29,6 +29,8 @@ namespace Shared.Models
 
         public Frequency? Frequency { get; set; }
 
+        [Required(ErrorMessage = "The Due date is required.")]
+        [Range(1, 31, ErrorMessage = "Please enter a date between 1 and 31")]
         public int? DueDate { get; set; }
     }
 }

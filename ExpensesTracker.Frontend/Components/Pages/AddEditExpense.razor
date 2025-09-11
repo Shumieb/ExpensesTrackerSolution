@@ -1,0 +1,181 @@
+﻿@page "/addEditExpense"
+@page "/addEditExpense/{id:int}"
+@rendermode InteractiveServer
+
+@inject NavigationManager NavigationManager;
+@inject ExpensesClient ExpensesClient;
+@inject CategoriesClient CategoriesClient;
+@inject FrequenciesClient FrequenciesClient;
+
+<PageTitle>@title</PageTitle>
+
+@if(expense is null || categories is null || frequencies is null)
+{
+    <p>loading....</p>
+}
+else
+{
+    <div class="custom-w-60 mx-auto mb-5 bg-dark-custom py-5 rounded">
+
+        <!-----Page Title----->
+        <h3 class="text-white text-center text-capitalize mb-4">
+            @title
+        </h3>
+
+        <EditForm 
+            Model="@expense" 
+            FormName="addEditExpense" 
+            OnValidSubmit="HandleSubmit"
+            Enhance
+        >
+            <DataAnnotationsValidator />
+
+            <div class="mb-3 custom-w-80 mx-auto">
+                <label for="name" class="form-label txt-custom-dark fs-5 text-white">Name</label>
+                <InputText id="name" @bind-Value="expense.Name" class="form-control fs-5 txt-custom-dark" />
+                <ValidationMessage For="() => expense.Name" class="txt-custom-danger" />
+            </div>
+
+            <div class="mb-3 custom-w-80 mx-auto">
+                <label for="amount" class="form-label txt-custom-dark fs-5 text-white">Amount</label>
+                <InputNumber id="amount" @bind-Value="expense.Amount" class="form-control fs-5 txt-custom-dark" />
+                <ValidationMessage For="() => expense.Amount" class="txt-custom-danger" />
+            </div>
+
+            <div class="mb-4 custom-w-80 mx-auto">
+                <label for="category" class="form-label fs-5 text-white">Category</label>
+                <InputSelect id="category" @bind-Value="expense.CategoryId" class="form-select fs-5">
+                    <option value="0" class="txt-custom-dark">Select a Category</option>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.CategoryId" class="txt-custom-dark fs-5">@category.Name</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => expense.CategoryId" class="txt-custom-danger" />
+            </div>
+
+            <div class="mb-3 custom-w-80 mx-auto">
+                <label for="isPaid" class="form-label fs-5 text-white">Payment Status: </label>
+                <InputRadioGroup @bind-Value="expense.IsPaid">
+                    <span class="px-3 align-baseline">
+                        <InputRadio Value="true" class="form-check-input custom-mt1" />
+                        <label class="form-check-label fs-5 text-white" for="paid">Paid</label>
+                    </span>
+                    <span class="px-3">
+                        <InputRadio Value="false" class="form-check-input custom-mt1" />
+                        <label class="form-check-label fs-5 text-white" for="notPaid">Not Paid</label>
+                    </span>
+                </InputRadioGroup>
+                <ValidationMessage For="() => expense.IsPaid" class="txt-custom-danger" />
+            </div>
+
+            <div class="mb-3 custom-w-80 mx-auto">
+                <label for="frequency" class="form-label fs-5 text-white">Frequency: </label>
+                <InputRadioGroup @bind-Value="expense.FrequencyId">
+                    @foreach(var frequency in frequencies)
+                    {
+                        <span class="px-3 align-baseline">
+                            <InputRadio Value="frequency.FrequencyId" class="form-check-input custom-mt1" />
+                            <label class="form-check-label fs-5 text-white" for="frequencyId">@frequency.Name</label>
+                        </span>
+                    }               
+                </InputRadioGroup>
+                <ValidationMessage For="() => expense.FrequencyId" class="txt-custom-danger" />
+            </div>
+
+                <div class="mb-4 custom-w-80 mx-auto">
+                    <label for="dueDate" class="form-label txt-custom-dark fs-5 text-white">Monthly Due Date</label>
+                    <InputNumber id="dueDate" @bind-Value="expense.DueDate" class="form-control fs-5 txt-custom-dark" />
+                    <ValidationMessage For="() => expense.DueDate" class="txt-custom-danger" />
+                </div>
+
+            <div class="mb-3 custom-w-80 mx-auto align-items-center d-flex justify-content-center">
+                <button type="submit" class="btn bg-custom-btn-dark mx-2">
+                    <span class="txt-custom-dark"><i class="bi bi-floppy"></i></span>
+                    <span class="txt-custom-dark fw-bold">Save</span>
+                </button>
+                <a role="button" class="btn btn-secondary fw-bold mx-2" href="/">
+                    <i class="bi bi-x-circle"></i>
+                    Cancel
+                    </a>
+            </div>
+
+        </EditForm>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Expense? expense { get; set; }
+
+    private Expense[] expenses= [
+            new Expense { ExpenseId = 1, Name = "Phone Bill", Amount = 20.99M, CategoryId = 1, FrequencyId=1, DueDate=12 },
+            new Expense { ExpenseId = 2, Name = "Water Bill", Amount = 20.99M, CategoryId = 1, FrequencyId = 1, DueDate = 10 },
+            new Expense { ExpenseId = 3, Name = "Rent", Amount = 200.99M, CategoryId = 2, FrequencyId = 1, DueDate = 8 },
+            new Expense { ExpenseId = 4, Name = "Asda Grocery Shopping", Amount = 20.99M, CategoryId = 3, FrequencyId = 2, DueDate = 11 }
+    ];
+
+    private Category[]? categories = [
+        new Category { CategoryId= 1, Name="Bills", Description="This category is for bills."},
+        new Category { CategoryId = 2, Name = "Housing Costs", Description = "This category is for housing costs." },
+        new Category { CategoryId = 3, Name = "Shopping", Description = "This category is for shopping costs." }
+    ];
+
+    private Frequency[]? frequencies = [
+        new Frequency { FrequencyId=1, Name="Monthly"},
+        new Frequency { FrequencyId=2, Name="Once Only"}
+    ];
+
+    private string title = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+        if (id > 0)
+        {
+            // expense = await ExpensesClient.GetExpenseAsync(id);
+            expense = expenses.FirstOrDefault(expense => expense.ExpenseId == id);
+            title = $"Editing {expense?.Name}";
+        }
+        else
+        {
+            expense = new Expense
+            {
+                Name = string.Empty,
+                Amount = 0,
+                CategoryId=0,
+                FrequencyId=1,
+                IsPaid = false,
+                DueDate= 1
+            };
+            title = "Add Expense";
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+       // categories = await CategoriesClient.GetCategoriesAsync();
+       // frequencies = await FrequenciesClient.GetFrequenciesAsync();
+    }
+
+    private void HandleSubmit()
+    {
+        if (expense is null) return;
+
+        if (id <= 0)
+        {
+            // check the category is valid
+            // create a new expense
+        }
+        else
+        {
+            expense.ExpenseId = id;            
+            // update the expense
+        }
+
+        NavigationManager.NavigateTo("/");
+    }
+}

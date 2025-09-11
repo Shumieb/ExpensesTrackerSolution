@@ -1,0 +1,76 @@
+﻿@page "/delete-expense/{id:int}"
+
+@inject NavigationManager NavigationManager;
+
+<PageTitle>@title</PageTitle>
+
+<div class="custom-w-60 mx-auto text-center border border-3 rounded border-danger py-4 bg-dark-custom">
+    <!-----Page Title----->
+    <h3 class="text-white text-center text-capitalize mb-3">
+        Delete Expense
+    </h3>
+
+    @if (expense is null)
+    {
+        <p class="fs-4 text-center text-white fw-bold">loading....</p>
+    }
+    else
+    {
+        <p class="fs-5 text-white">Are you sure you want to delete the expense: <b>@expense.Name</b>?</p>
+
+        <div class="mt-4">
+            <button class="btn btn-danger mx-1">
+                <i class="bi bi-trash3"></i>
+                Delete
+            </button>
+            <a role="button"
+               class="btn btn-secondary mx-1"
+               href="/">
+                <i class="bi bi-arrow-left-square"></i>
+                Back
+            </a>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int? id { get; set; }
+
+    private Expense expense = new Expense
+        {
+            ExpenseId = 1,
+            Name = string.Empty,
+            Amount = 0,
+            CategoryId = 0,
+            FrequencyId = 1,
+            IsPaid = false,
+            DueDate = 1
+        };
+
+    private string title = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+        if (id > 0)
+        {
+            expense = new Expense
+            {
+                Name = "Grocery Shopping",
+                Amount = 20.25M,
+                CategoryId = 1,
+                FrequencyId = 1,
+                IsPaid = false,
+                DueDate = 12
+            };
+
+            title = $"Delete {expense.Name}";
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+}

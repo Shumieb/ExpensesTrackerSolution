@@ -1,0 +1,25 @@
+﻿
+<div class="d-flex align-items-baseline custom-w-60 mx-auto py-2 mt-3">
+    <p class="fs-5 txt-custom-dark me-2">Filter: </p>
+    <button 
+        class="btn btn-danger py-2 px-3 me-2" 
+        @onclick="() => OnSetItemView.InvokeAsync(true)"
+    >
+        <i class="bi bi-eye-fill"></i>
+        <span class="ps-1">Expenses</span>
+    </button>
+    <button 
+        class="btn bg-custom-btn-dark txt-custom-dark py-2  px-3" 
+        @onclick="() => OnSetItemView.InvokeAsync(false)"
+    >
+        <i class="bi bi-eye-fill"></i>
+        <span class="ps-1">Income</span>
+    </button>
+</div>
+
+@code {
+
+    [Parameter] 
+    public EventCallback<bool> OnSetItemView { get; set; }
+
+}

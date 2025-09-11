@@ -1,0 +1,68 @@
+﻿@page "/delete-income/{id:int}"
+
+@inject NavigationManager NavigationManager;
+
+<PageTitle>@title</PageTitle>
+
+<div class="custom-w-60 mx-auto text-center border border-3 rounded border-info py-4 bg-dark-custom">
+    <!-----Page Title----->
+    <h3 class="text-white text-center text-capitalize mb-3">
+        Delete Income
+    </h3>
+
+    @if(income is null)
+    {
+        <p class="fs-4 text-center text-white fw-bold">loading....</p>
+    }
+    else{
+        <p class="fs-5 text-white">Are you sure you want to delete the income: <b>@income.Name</b>?</p>
+
+        <div class="mt-4">
+            <button class="btn btn-danger mx-1">
+                <i class="bi bi-trash3"></i>
+                Delete
+            </button>
+            <a role="button"
+               class="btn btn-secondary mx-1"
+               href="/">
+                <i class="bi bi-arrow-left-square"></i>
+                Back
+            </a>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int? id { get; set; }
+
+   private Income income = new Income
+        {
+            IncomeId=1,
+            Name = "Salary",
+            Amount = 200.56M
+        };
+
+    private string title = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+        if (id > 0)
+        {
+            //income = await IncomeClient.GetIncomeAsync(id);
+            income = new Income
+            {
+                Name = "Salary",
+                Amount = 200.56M
+            };
+
+            title = $"Delete {income.Name}";
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+}
